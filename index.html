@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="all.css">
+</head>
+<body>
+
+    <div id="app">
+  
+        <div class="container">
+          <h1>吃飽太閒之裝備加工計算 <span class="fz-1">製作人:阿勳 遊戲id:我不是我</span></h1>
+          <a class="mb-1" href="https://mo.lager.com.tw/Mystina/intro/k_accouter/accouter02.shtml">裝備白字數值 連結 請點右鍵另開頁面</a>
+          <div>
+            <p>若輸入值已含字首，請點選無字首</p>
+            <label for="name" class="mb-3 me-3">名稱</label>
+          <input type="text" id="name" v-model="data.name">
+            <br>
+            <label for="defense" class="mb-3 me-3">防禦</label>
+          <input type="number" id="defense" v-model="data.defense">
+          <br>
+          <label for="dodge" class="me-3">閃避</label>
+          <input type="number" id="dodge" v-model="data.dodge">
+          </div>
+          <div class="form-ckeck">
+            <input type="radio" class="form-check-input" id="radoi1" v-model="data.prefix" value="1">
+            <label for="radoi1" class="form-check-label me-3">無字首</label>
+            <input type="radio" class="form-check-input" id="radoi2" v-model="data.prefix" value="2">
+            <label for="radoi2" class="form-check-label me-3">華麗</label>
+            <input type="radio" class="form-check-input" id="radoi3" v-model="data.prefix" value="3">
+            <label for="radoi3" class="form-check-label me-3">迴避</label>
+            <input type="radio" class="form-check-input" id="radoi4" v-model="data.prefix" value="4">
+            <label for="radoi4" class="form-check-label me-3">堅硬</label>
+          </div>
+          <div class="form-ckeck d-flex">
+            <h2>加工</h2>
+            <div v-for="(item,key) in number" :key="key">
+              <input type="radio" class="form-check-input" :id="item.name" v-model="data.process" :value="key" :data-num="item.addNum">
+              <label :for="item.name" class="form-check-label me-3">{{item.name}}</label>
+       
+            </div>
+          </div>
+          <div v-if="data.process==9">
+      
+            <div class="form-ckeck d-flex">
+              <h2>精煉</h2>
+              <div v-for="(item,key) in refiningNum" :key="key">
+                <input type="radio" class="form-check-input" :id="item" v-model="data.refining" :value="key" :data-num="key">
+                <label :for="item" class="form-check-label me-3">{{item.name}}</label>
+                
+              </div>
+      
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary mb-1" @click="calculate()">計算</button>
+        </div>
+        <div class="container">
+          <div class="row">
+            <template v-for="(item,key) in newData" :key="key">
+               <div class="card col-4">
+                  <div class="card-header">
+                    {{item.name}}
+                  </div>
+                  <div class="card-body">
+                    <p>防禦{{item.n}}</p>
+                    <p>閃避{{item.m}}</p>
+                  </div>
+      
+          </div>
+            </template>
+          </div>
+          <button type="button" class="btn btn-secondary" @click="reset()">重置</button>
+        </div>
+      
+      </div>
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
+      <script>
+        const app = {
+	      data() {
+	        return {
+            number:[
+               {
+                name:"+0",
+                magnification:1,
+                addNum:0,
+              },
+              {
+                name:"+1",
+                magnification:0.05,
+                addNum:1,
+              },
+              {
+                name:"+2",
+                magnification:0.10,
+                addNum:2,
+              },
+              {
+                name:"+3",
+                magnification:0.15,
+                addNum:3,
+              },
+              {
+                name:"+4",
+                magnification:0.25,
+                addNum:4,
+              },
+              {
+                name:"+5",
+                magnification:0.35,
+                addNum:5,
+              }
+              ,
+              {
+                name:"+6",
+                magnification:0.45,
+                addNum:6,
+              },
+              {
+                name:"+7",
+                magnification:0.60,
+                addNum:7,
+              },
+              {
+                name:"+8",
+                magnification:0.75,
+                addNum:8,
+              },
+              {
+                name:"+9",
+                magnification:0.90,
+                addNum:9,
+              }
+              
+            ],
+            refiningNum:[
+              {
+              name:"1",
+              add:1,
+              num:0.05,
+              },{
+              name:"2",
+              add:2,
+              num:0.10,
+              },{
+              name:"3",
+              add:3,
+              num:0.15,
+              },{
+              name:"4",
+              add:4,
+              num:0.20,
+              },{
+              name:"5",
+              add:5,
+              num:0.25,
+              },{
+              name:"6",
+              add:6,
+              num:0.35,
+              },{
+              name:"7",
+              add:7,
+              num:0.45,
+              },{
+              name:"8",
+              add:8,
+              num:0.55,
+              },{
+              name:"9",
+              add:9,
+              num:0.65,
+              },{
+              name:"10",
+              add:10,
+              num:0.75,
+              },{
+              name:"11",
+              add:11,
+              num:0.90,
+              },{
+              name:"12",
+              add:12,
+              num:1.05,
+              },{
+              name:"13",
+              add:13,
+              num:1.20,
+              },{
+              name:"14",
+              add:14,
+              num:1.35,
+              },{
+              name:"15",
+              add:15,
+              num:1.50,
+              },{
+              name:"16",
+              add:16,
+              num:1.70,
+              },
+                        ],
+            data:{
+              name:"", //名稱
+              dodge:"", //防禦
+              defense:"", //閃避
+              prefix:"",  //字首
+              process:"", //加工
+              refining:"", //精煉
+              refiningNum:"",
+            },
+            newData:[
+            ],
+            
+	        };
+	      },
+	      methods:{
+          calculate(){
+            const a = this.data.dodge //防禦
+            const b = this.data.defense //閃避
+            const c = this.data.prefix //字首 用成判斷式
+            const d = this.number[this.data.process] //加工值
+            let e = this.refiningNum[this.data.refining] //精煉值
+            
+            
+            let q = {};
+            
+            
+            console.log(a,b,c,d,e)
+            if(e === undefined){
+              e = {
+                num:0,
+                add:-1
+              }
+            }
+            if(c === "1"){
+              const h = Math.floor(a*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+              const z = Math.floor(b*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+              q = {
+                name:this.data.name,
+                m:h,
+                n:z,
+              }
+              this.newData.push(q)
+            }
+            if(c === "2"){
+              const h = Math.floor(Math.floor(a*1.3)*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+              const z = Math.floor(Math.floor(b*1.3)*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+            q = {
+                name:this.data.name,
+                m:h,
+                n:z,
+              }
+              this.newData.push(q)
+            }
+            if(c === "3"){
+              const h = Math.floor(Math.floor(a*1.3)*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+              const z = Math.floor(Math.floor(b*1.3)*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+             q = {
+                name:this.data.name,
+               
+                m:h,
+                n:z,
+              }
+              this.newData.push(q)
+            }
+            if(c === "4"){
+              const h = Math.floor(a*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+              const z = Math.floor(Math.floor(b*1.3)*(1 + d.magnification + e.num) + d.addNum + e.add + 1)
+              q = {
+                name:this.data.name,
+                m:h,
+                n:z,
+              }
+              this.newData.push(q)
+            }
+              this.data.dodge = ""
+              this.data.defense =""
+              this.data.process = ""
+              this.data.refining = ""
+          },
+          reset(){
+            this.newData =[]
+          },
+	      },
+	      mounted(){  
+	      }
+    };
+
+        Vue.createApp(app).mount("#app");
+      </script>
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</body>
+</html>
